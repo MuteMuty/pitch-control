@@ -1,42 +1,40 @@
-# Pitch Control Game
+# Pitch Control
 
-## Overview
-The Pitch Control Game is an innovative Flutter-based mobile application that leverages pitch detection to create an interactive and engaging gaming experience. This project showcases the integration of audio capture and pitch detection to control game actions using the player's voice.
+**A Flutter game you steer with your voice: sing higher and the ball rises, go quiet and it falls, and you dodge the spikes.**
 
-## Key Features
-- **Pitch Detection**: The game uses `FlutterAudioCapture` and `PitchDetector` to detect the pitch of the player's voice. This allows the game to respond to vocal inputs, making the gameplay experience unique and interactive.
-- **Voice-Controlled Gameplay**: Players can start and restart the game by making a sound. This eliminates the need for traditional touch controls and adds a novel twist to the gaming experience.
-- **Dynamic Obstacles**: The game features obstacles that appear in rapid succession, requiring players to navigate carefully using their voice. This adds a layer of challenge and excitement to the gameplay.
-- **Score Tracking**: The game keeps track of the player's score and top score, providing a competitive element that encourages players to improve their performance.
-- **User Interface**: The game boasts a clean and intuitive user interface, ensuring that players can easily understand and enjoy the game.
+<img src="porocilo/figures/game_start.jpg" alt="Start of a game: a blue ball near the orange floor, one red spike hanging from the ceiling, score and top score at the top, five hearts for lives" width="220"/>
+<img src="porocilo/figures/obstacles_many.jpg" alt="A rapid run of spikes from the ceiling and the floor" width="220"/>
+<img src="porocilo/figures/lives.jpg" alt="Later in a game with two of the five lives lost" width="220"/>
 
-## How It Works
-- **Starting the Game**: The game begins when the player makes any sound. The pitch detection system captures the sound and starts the game.
-- **Navigating Obstacles**: Players use their voice to control the ball and navigate through obstacles. The pitch of the player's voice determines the movement of the ball.
-- **Game Over and Restart**: When the player loses all lives, the game transitions to the game over screen. To restart the game, the player simply makes any sound, and the game begins anew.
+## Why it exists
 
-## Technical Details
-- **Flutter Framework**: The game is built using the Flutter framework, which allows for cross-platform development and a smooth user experience.
-- **Audio Capture**: The app uses `FlutterAudioCapture` to capture audio input from the player's device.
-- **Pitch Detection**: The captured audio is processed using `PitchDetector` to determine the pitch of the player's voice.
-- **State Management**: The game uses state management techniques to handle game states, such as starting, pausing, and restarting the game.
+Solo coursework at the Faculty of Computer and Information Science, University of Ljubljana (Jan 2025). The question was whether the pitch of a voice works as a continuous game control, where speech commands only give discrete ones. The written report is in [`porocilo/`](porocilo/) and the slides are in [`predstavitev/`](predstavitev/).
 
-## Installation and Usage
-To run this project locally, follow these steps:
+## How it works
 
-1. **Clone the repository**:
-    ```sh
-    git clone <repository-url>
-    ```
-2. **Install dependencies**:
-    ```sh
-    flutter pub get
-    ```
-3. **Run the app**:
-    ```sh
-    flutter run
-    ```
+| File | What it does |
+|---|---|
+| `lib/pitch_detector_service.dart` | Captures the microphone at 44.1 kHz with `flutter_audio_capture` and runs `pitch_detector_dart` on each buffer. Any sound also starts or restarts the game. |
+| `lib/ball_controller.dart` | The game loop: gravity, spikes from the ceiling and the floor, occasional rapid runs of spikes, speed that rises over time, collisions, 5 lives, score and top score. |
+| `lib/game_screen.dart`, `lib/spike_painter.dart` | Draws the ball, the spikes and the hearts. |
 
-## APK Download
-You can download the latest APK file from the `build` folder.
-Link to apk: `/build/app/outpts/flutter-apk/app-release.apk`.
+The pitch range from E3 (164.81 Hz) to about C♯5 (553.25 Hz) maps linearly to the height of the screen. When the voice asks for a point above the ball, the ball gets exactly the upward speed it needs to reach that height under gravity (`v = √(2gh)`), so it moves in a natural arc instead of jumping. When the voice stops, gravity brings it down.
+
+## Run it
+
+Needs Flutter with Dart 3.5 or later and a phone with a microphone.
+
+```sh
+flutter pub get
+flutter run
+```
+
+Allow microphone access when asked.
+
+## Tech
+
+Flutter, Dart, `flutter_audio_capture`, `pitch_detector_dart`, `permission_handler`, `provider`.
+
+## Status
+
+Coursework, finished in Jan 2025. Made by [Erik Pahor](https://github.com/MuteMuty), alone.
